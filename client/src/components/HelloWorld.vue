@@ -74,7 +74,7 @@ export default {
       
         options.challenge = decode(options.challenge)
 
-        let key = await navigator.credentials.create({ publicKey: options })
+        let key = await navigator.credentials.get({ publicKey: options })
 
         let validateReq = {
           id: key.id,
