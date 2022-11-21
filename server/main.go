@@ -23,7 +23,7 @@ var cfg = &webauthn.Config{
 	CredentialAlgs:          []int{webauthn.COSEAlgES256, webauthn.COSEAlgES384, webauthn.COSEAlgES512, webauthn.COSEAlgRS256},
 }
 
-var origin = "localhost"
+var origin = "https://webauthndemo.ryanjolaughlin.com"
 
 type GenerateChallengeRequest struct {
 	Purpose  string `json:"purpose"`
