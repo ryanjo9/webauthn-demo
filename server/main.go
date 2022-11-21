@@ -12,7 +12,7 @@ import (
 )
 
 var cfg = &webauthn.Config{
-	RPID:                    "ryanjolaughlin.com",
+	RPID:                    "webauthndemo.ryanjolaughlin.com",
 	RPName:                  "Ryan O'Laughlin's website",
 	Timeout:                 uint64(30000),
 	ChallengeLength:         64,

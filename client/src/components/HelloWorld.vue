@@ -1,8 +1,43 @@
 <template>
   <div class="hello">
-    <button type="button" class="btn btn-success" @click="registerKey">Register</button>
 
-    <button type="button" class="btn btn-success" @click="registerKey">Login</button>
+    <div class="register" v-if="view === 'register'">
+      <p>
+        To get started, enter a username and click the register button. Your browser will let you choose to register a passkey on this device or on another compatible device.
+      </p>
+      <p>
+        Keep in mind, even though your device may ask for biometric authentication, your biometric data <b>never leaves your device</b>. Even if I wanted to access your biometric data, it is impossible
+        to access that data through passkeys and webauthn :)
+      </p>
+
+      <input style="max-width:200px;margin:auto" type="text" class="form-control field-value" v-model="username" placeholder="username">
+
+      <button style="margin-top:8px;margin:auto;margin-bottom:8px;" type="button" class="btn btn-success" @click="registerKey">Register</button>
+    </div>
+    <div class="login" v-if="view === 'login'">
+      <p>
+        To login with a passkey, click the login button. You'll be asked to choose a passkey from this device or use a passkey from a different device.
+        Logging in with passkeys removes the need for passwords you don't even need to type in your username! 
+      </p> 
+      <p>
+        Keep in mind, even though your device may ask for biometric authentication, your biometric data <b>never leaves your device</b>. Even if I wanted to access your biometric data, it is impossible
+        to access that data through passkeys and webauthn :) 
+      </p>
+      <button type="button" class="btn btn-success" @click="validateKey">Login</button>
+      <p v-if="loggedInUsername !== ''">Logged in as {{ loggedInUsername }}</p>
+    </div>
+
+    <div v-if="view === 'login'">
+      <p>Don't have a passkey for this site or want to register a new passkey?</p>
+      <button v-if="view === 'login'" type="button" class="btn btn-success" @click="setView('register')">Try Registration</button>
+    </div>
+    
+    <div v-if="view === 'register'">
+      <p>Once you've registered a passkey, try logging in with it!</p>
+      <button v-if="view === 'register'" style="margin-left:8px" type="button" class="btn btn-success" @click="setView('login')">Try Logging In</button>
+    </div>
+
+    <a href="https://github.com/ryanjo9/webauthn-demo">View the source code</a>
   </div>
 </template>
 
@@ -27,7 +62,9 @@ export default {
   },
   data() {
     return {
-      username: 'vuetest'
+      username: '',
+      loggedInUsername: '',
+      view: 'register'
     }
   },
   methods: {
@@ -76,9 +113,13 @@ export default {
         }
 
         await axios.post('/api/register-key', registerReq)
+        this.username = ''
       } catch (error) {
         console.log(error)
       }
+    },
+    setView(view) {
+      this.view = view
     }
   }
 }
@@ -99,5 +140,18 @@ li {
 }
 a {
   color: #42b983;
+}
+
+.register {
+  margin: auto;
+  max-width: 700px;
+  margin-top: 20px;
+}
+
+.login {
+  max-width: 700px;
+  margin: auto;
+  margin-top: 16px;
+  margin-bottom: 20px;
 }
 </style>
