@@ -24,7 +24,7 @@
         to access that data through passkeys and webauthn :) 
       </p>
       <button type="button" class="btn btn-success" @click="validateKey">Login</button>
-      <p v-if="loggedInUsername !== ''">Logged in as {{ loggedInUsername }}</p>
+      <p v-if="loggedInUsername !== ''">You logged in as {{ loggedInUsername }}</p>
     </div>
 
     <div v-if="view === 'login'">
@@ -88,7 +88,9 @@ export default {
           type: key.type
         }
 
-        await axios.post('/api/validate-key', validateReq)
+        const { data } = await axios.post('/api/validate-key', validateReq)
+
+        this.loggedInUsername = data.username
       } catch (error) {
         console.log(error)
       }
@@ -120,6 +122,8 @@ export default {
     },
     setView(view) {
       this.view = view
+      this.username = ''
+      this.loggedInUsername = ''
     }
   }
 }
