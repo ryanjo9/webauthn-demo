@@ -163,7 +163,7 @@ func (s *Server) ValidateKey(w http.ResponseWriter, req *http.Request) {
 		UserCredentialIDs: [][]byte{
 			credID,
 		},
-		PrevCounter: uint32(user.RawPasskey.Counter),
+		PrevCounter: uint32(0), // temporarily ignore sign count
 		Credential:  credential,
 	}
 
