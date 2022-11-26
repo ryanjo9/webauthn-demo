@@ -105,6 +105,7 @@ export default {
         const { data } = await axios.post('/api/validate-key', validateReq)
 
         this.loggedInUsername = data.username
+        this.errorMsg = ''
       } catch (error) {
         console.log(error)
         this.errorMsg = 'Sorry, couldn\'t log in with a passkey'
@@ -131,6 +132,7 @@ export default {
 
         await axios.post('/api/register-key', registerReq)
         this.username = ''
+        this.errorMsg = ''
       } catch (error) {
         console.log(error)
         this.errorMsg = 'Sorry, couldn\'t register a passkey'
