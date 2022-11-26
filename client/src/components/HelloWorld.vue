@@ -107,7 +107,7 @@ export default {
         this.loggedInUsername = data.username
       } catch (error) {
         console.log(error)
-        this.errorMsg = 'Sorry, couldn\'t register a passkey'
+        this.errorMsg = 'Sorry, couldn\'t log in with a passkey'
       }
     },
     async registerKey() {
@@ -133,7 +133,7 @@ export default {
         this.username = ''
       } catch (error) {
         console.log(error)
-        this.errorMsg = 'Sorry, couldn\'t log in with the passkey'
+        this.errorMsg = 'Sorry, couldn\'t register a passkey'
       }
     },
     setView(view) {
