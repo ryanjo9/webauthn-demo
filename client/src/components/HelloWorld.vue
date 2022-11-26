@@ -1,30 +1,43 @@
 <template>
   <div class="hello">
-
+    <div class="intro">
+      <p>
+        Passkeys are a new type of credential built on the WebAuthN spec that are easier to use and more secure than passwords.
+        Instead of asking you creating, remembering, and reusing a password, websites and apps can ask your device to generate a passkey.
+      </p>
+      <p>
+        Passkeys are a new technology so they're not supported on all devices and browsers yet. This demo works best in Safari on a Mac running macOS Ventura and with iPhone running iOS 16. 
+        Better passkey experiences are coming soon for Android, Windows, and Chrome on Mac.
+      </p>
+    </div>
     <div class="register" v-if="view === 'register'">
       <p>
-        To get started, enter a username and click the register button. Your browser will let you choose to register a passkey on this device or on another compatible device.
+        To get started, enter a username (doesn't need to be "real" or related to you at all) and click the register button. A pop up will appear asking where you'd like to save a passkey
       </p>
       <p>
-        Keep in mind, even though your device may ask for biometric authentication, your biometric data <b>never leaves your device</b>. Even if I wanted to access your biometric data, it is impossible
-        to access that data through passkeys and webauthn :)
+        Keep in mind, even though your device may ask for FaceId or your fingerprint, your biometric data <b>never leaves your device</b>. Your device reveals to sites and apps whether or not it verified your identity.
       </p>
 
-      <input style="max-width:200px;margin:auto" type="text" class="form-control field-value" v-model="username" placeholder="username">
+      <div class="demo-action">
+        <p>Create a new passkey</p>
 
-      <button style="margin-top:8px;margin:auto;margin-bottom:8px;" type="button" class="btn btn-success" @click="registerKey">Register</button>
+        <input style="max-width:200px;margin:auto;margin-bottom:8px;" type="text" class="form-control field-value" v-model="username" placeholder="username">
+        <button style="margin:auto;" type="button" class="btn btn-success" @click="registerKey">Register</button>
+
+        <p v-if="errorMsg" style="color: red">{{ errorMsg }}</p>
+      </div>
     </div>
     <div class="login" v-if="view === 'login'">
       <p>
-        To login with a passkey, click the login button. You'll be asked to choose a passkey from this device or use a passkey from a different device.
-        Logging in with passkeys removes the need for passwords you don't even need to type in your username! 
-      </p> 
-      <p>
-        Keep in mind, even though your device may ask for biometric authentication, your biometric data <b>never leaves your device</b>. Even if I wanted to access your biometric data, it is impossible
-        to access that data through passkeys and webauthn :) 
+        With passkeys, you don't even need to type in your username. Simply click on "Login" and follow the prompts to choose the account you want to sign in to.
+        Logging in with a passkey provides two factors of authentication: 1) Something you have (the passkey on your device) and 2) Something you are or something you know (FaceId, TouchId, device password or device passcode).
       </p>
-      <button type="button" class="btn btn-success" @click="validateKey">Login</button>
-      <p v-if="loggedInUsername !== ''">You logged in as {{ loggedInUsername }}</p>
+      <div class="demo-action">
+        <p>Login with a passkey</p>
+        <button style="margin-bottom:8px;" type="button" class="btn btn-success" @click="validateKey">Login</button>
+        <p v-if="loggedInUsername !== ''" style="margin-bottom:0px;">You logged in as {{ loggedInUsername }}</p>
+        <p v-if="errorMsg" style="color: red;margin-bottom:0px;">{{ errorMsg }}</p>
+      </div>
     </div>
 
     <div v-if="view === 'login'">
@@ -64,7 +77,8 @@ export default {
     return {
       username: '',
       loggedInUsername: '',
-      view: 'register'
+      view: 'register',
+      errorMsg: '',
     }
   },
   methods: {
@@ -93,6 +107,7 @@ export default {
         this.loggedInUsername = data.username
       } catch (error) {
         console.log(error)
+        this.errorMsg = 'Sorry, couldn\'t register a passkey'
       }
     },
     async registerKey() {
@@ -118,13 +133,15 @@ export default {
         this.username = ''
       } catch (error) {
         console.log(error)
+        this.errorMsg = 'Sorry, couldn\'t log in with the passkey'
       }
     },
     setView(view) {
       this.view = view
       this.username = ''
       this.loggedInUsername = ''
-    }
+      this.errorMsg = ''
+    },
   }
 }
 </script>
@@ -146,10 +163,18 @@ a {
   color: #42b983;
 }
 
+.hello {
+  max-width: 700px;
+  margin: auto;
+}
 .register {
   margin: auto;
   max-width: 700px;
   margin-top: 20px;
+}
+
+.register p {
+  text-align: justify;
 }
 
 .login {
@@ -157,5 +182,25 @@ a {
   margin: auto;
   margin-top: 16px;
   margin-bottom: 20px;
+}
+
+.login p {
+  text-align: justify;
+}
+
+.intro p {
+  text-align: justify;
+}
+
+.demo-action {
+  padding: 16px;
+  width: 250px;
+  margin: auto;
+  border-radius: 8px;
+  background-color: #dae0e6;
+}
+
+.demo-action p {
+  text-align: center;
 }
 </style>

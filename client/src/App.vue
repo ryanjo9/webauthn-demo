@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <h1>WebAuthN Demo!</h1>
+    <h1>WebAuthN / Passkeys Demo!</h1>
     <HelloWorld msg="Welcome to Your Vue.js App"/>
   </div>
 </template>
