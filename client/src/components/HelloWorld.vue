@@ -37,9 +37,10 @@
       </p>
       <div class="demo-action">
         <p>Login with a passkey</p>
-        <button style="margin-bottom:8px;" type="button" class="btn btn-success" @click="validateKey">Login</button>
-        <p v-if="loggedInUsername !== ''" style="margin-bottom:0px;">You logged in as {{ loggedInUsername }}</p>
-        <p v-if="errorMsg" style="color: red;margin-bottom:0px;">{{ errorMsg }}</p>
+        <button style="margin-bottom:8px;margin-top:8px;" type="button" class="btn btn-success" @click="validateKey">Login</button>
+        
+        <p v-if="loggedInUsername !== ''">You logged in as {{ loggedInUsername }}</p>
+        <p v-if="errorMsg" style="color: red;">{{ errorMsg }}</p>
       </div>
     </div>
 
