@@ -12,17 +12,20 @@
     </div>
     <div class="register" v-if="view === 'register'">
       <p>
-        To get started, enter a username (doesn't need to be "real" or related to you at all) and click the register button. A pop up will appear asking where you'd like to save a passkey
+        To get started, enter a username then click the register button. Follow the prompts that pop up to save a passkey.
       </p>
       <p>
-        Keep in mind, even though your device may ask for FaceId or your fingerprint, your biometric data <b>never leaves your device</b>. Your device reveals to sites and apps whether or not it verified your identity.
+        Keep in mind, even though your device may ask for FaceId or your fingerprint, your biometric data <b>never leaves your device</b>. Your device only reveals whether or not it verified your identity and a signature of your passkey.
       </p>
 
       <div class="demo-action">
         <p>Create a new passkey</p>
+        <input style="max-width:200px;margin:auto;margin-bottom:8px;margin-top:8px;" type="text" class="form-control field-value" v-model="username" placeholder="username">
+        
+        <p>Letters or numbers (a-z,0-9): {{ getValidationEmoji(hasValidChars) }}</p>
+        <p>Between 4-16 characters: {{ getValidationEmoji(isValidLength) }}</p>
 
-        <input style="max-width:200px;margin:auto;margin-bottom:8px;" type="text" class="form-control field-value" v-model="username" placeholder="username">
-        <button style="margin:auto;" type="button" class="btn btn-success" @click="registerKey">Register</button>
+        <button :disabled="isRegisterDisabled" style="margin:auto;margin-top:8px;" type="button" class="btn btn-success" @click="registerKey">Register</button>
 
         <p v-if="errorMsg" style="color: red">{{ errorMsg }}</p>
       </div>
@@ -79,6 +82,20 @@ export default {
       loggedInUsername: '',
       view: 'register',
       errorMsg: '',
+      validLength: false,
+      validChars: false
+    }
+  },
+  computed: {
+    isValidLength() {
+      return this.username.length <= 16 && this.username.length >= 4
+    },
+    hasValidChars() {
+      const reg = /[^a-zA-Z0-9]+/ // only letters and numbers
+      return !reg.test(this.username)
+    },
+    isRegisterDisabled() {
+      return !(this.isValidLength && this.hasValidChars)
     }
   },
   methods: {
@@ -112,6 +129,10 @@ export default {
       }
     },
     async registerKey() {
+      if (!this.isValidLength || !this.hasValidChars) {
+        // Validation criteria is already shown
+        return
+      }
       try {
         const { data: options } = await axios.post('/api/generate-challenge', {purpose: 'registration', username: this.username})
       
@@ -144,6 +165,12 @@ export default {
       this.loggedInUsername = ''
       this.errorMsg = ''
     },
+    getValidationEmoji(isValid) {
+      if (!this.username) {
+        return ''
+      }
+      return isValid ? '✅' : '⚠️' 
+    }
   }
 }
 </script>
@@ -196,7 +223,7 @@ a {
 
 .demo-action {
   padding: 16px;
-  width: 250px;
+  width: 300px;
   margin: auto;
   border-radius: 8px;
   background-color: #dae0e6;
@@ -204,5 +231,6 @@ a {
 
 .demo-action p {
   text-align: center;
+  margin-bottom: 0;
 }
 </style>

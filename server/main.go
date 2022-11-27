@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"regexp"
 
 	"github.com/fxamacker/webauthn"
 	"github.com/ryanjo9/webauthn-demo/server/mongodb"
@@ -14,13 +15,13 @@ import (
 var cfg = &webauthn.Config{
 	RPID:                    "webauthndemo.ryanjolaughlin.com",
 	RPName:                  "Ryan O'Laughlin's website",
-	Timeout:                 uint64(30000),
+	Timeout:                 uint64(90000),
 	ChallengeLength:         64,
-	AuthenticatorAttachment: webauthn.AuthenticatorCrossPlatform,
+	AuthenticatorAttachment: webauthn.AuthenticatorPlatform,
 	ResidentKey:             webauthn.ResidentKeyPreferred,
 	UserVerification:        webauthn.UserVerificationRequired,
 	Attestation:             webauthn.AttestationNone,
-	CredentialAlgs:          []int{webauthn.COSEAlgES256, webauthn.COSEAlgES384, webauthn.COSEAlgES512, webauthn.COSEAlgRS256},
+	CredentialAlgs:          []int{webauthn.COSEAlgES256, webauthn.COSEAlgRS256, webauthn.COSEAlgES384, webauthn.COSEAlgES512},
 }
 
 var origin = "https://webauthndemo.ryanjolaughlin.com"
@@ -59,6 +60,12 @@ func (s *Server) GenerateChallenge(w http.ResponseWriter, req *http.Request) {
 	if gcr.Purpose == "registration" {
 		if gcr.Username == "" {
 			http.Error(w, "Missing username", http.StatusBadRequest)
+			return
+		}
+
+		resp, err := regexp.Match("[^a-zA-Z0-9]+", []byte(gcr.Username))
+		if err != nil || resp || len(gcr.Username) > 16 || len(gcr.Username) < 4 {
+			http.Error(w, "Invalid username", http.StatusBadRequest)
 			return
 		}
 
