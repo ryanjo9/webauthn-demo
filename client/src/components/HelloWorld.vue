@@ -195,6 +195,8 @@ a {
 .hello {
   max-width: 700px;
   margin: auto;
+  padding-left: 16px;
+  padding-right: 16px;
 }
 .register {
   margin: auto;
